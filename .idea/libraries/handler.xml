@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="handler">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/handler.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
