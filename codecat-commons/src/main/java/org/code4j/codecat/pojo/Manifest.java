@@ -16,7 +16,7 @@ import java.util.Map;
  * Created by YangZH on 16-6-15
  * 下午12:35
  */
-
+@Deprecated
 public class Manifest {
 
     private Logger logger = Logger.getLogger(Manifest.class);

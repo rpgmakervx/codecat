@@ -35,7 +35,8 @@ public interface Const {
 
     public static final String PROPERTIESFILE = "app.properties";
     public static final String CONFIGFILE = "app.xml";
-    public static final String CONFIGEXISTS = "Config-Exists";
+    public static final String CONFIGEXISTS = "ConfigExists";
+    public static final String PLUGINEXISTS = "PluginExists";
 
     public static final String FUNCTIONCLASS = "function-class";
 
