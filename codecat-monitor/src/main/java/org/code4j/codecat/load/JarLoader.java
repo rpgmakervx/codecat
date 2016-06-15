@@ -5,9 +5,9 @@ package org.code4j.codecat.load;/**
  */
 
 import io.netty.channel.ChannelInboundHandlerAdapter;
-import net.contentobjects.jnotify.JNotify;
-import org.code4j.codecat.listener.Listener;
+import org.code4j.codecat.constants.Const;
 
+import java.io.File;
 import java.net.URL;
 import java.net.URLClassLoader;
 
@@ -19,10 +19,10 @@ import java.net.URLClassLoader;
 
 public class JarLoader {
 
-    public static String jar_path = System.getProperty("user.home")+"/osproject/handler.jar";
+    public String app_path;
 
-    public void watchJarFolder(){
-
+    public JarLoader(String app_path) {
+        this.app_path = Const.APP+app_path;
     }
 
     public static ChannelInboundHandlerAdapter loadNewClass(String path){
@@ -31,7 +31,6 @@ public class JarLoader {
             URL[] urls = {new URL("file:"+path)};
             // 以默认的ClassLoader作为父ClassLoader，创建URLClassLoader
             URLClassLoader classLoader = new URLClassLoader(urls);
-
             // 加载MySQL的JDBC驱动，并创建默认实例
             Class clazz = classLoader.loadClass("org.code4j.test.MyHandler");
             return null;
@@ -40,6 +39,11 @@ public class JarLoader {
             e.printStackTrace();
         }
         return null;
+    }
+
+    private void loadConfiguration(){
+        File configFile = new File(this.app_path);
+
     }
 
     public static void addNewFunction(){
@@ -51,22 +55,5 @@ public class JarLoader {
         }
     }
 
-    public static void fileWatch(String monitedPath){
-        int mask = JNotify.FILE_CREATED |
-                    JNotify.FILE_DELETED |
-                    JNotify.FILE_MODIFIED |
-                    JNotify.FILE_RENAMED;
-        // 是否监视子目录
-        boolean watchSubtree = true;
-        try {
-            int watchID = JNotify.addWatch(monitedPath, mask, watchSubtree, new Listener());
-            Thread.sleep(1000000);
-            boolean res = JNotify.removeWatch(watchID);
-            if (!res) {
-                // invalid
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+
 }

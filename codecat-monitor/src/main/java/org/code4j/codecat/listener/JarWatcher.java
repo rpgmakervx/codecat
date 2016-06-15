@@ -23,7 +23,7 @@ public class JarWatcher {
 
     public synchronized void watchJarFolder(){
         try {
-            int watchID = JNotify.addWatch(Const.CURR_PATH+Const.UP_LEVEL+Const.APP, mask, watchSubtree, new Listener());
+            int watchID = JNotify.addWatch(Const.APP, mask, watchSubtree, new Listener());
             wait();
         } catch (Exception e) {
             e.printStackTrace();

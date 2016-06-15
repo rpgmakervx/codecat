@@ -6,7 +6,6 @@
       <module fileurl="file://$PROJECT_DIR$/codecat-commons/codecat-commons.iml" filepath="$PROJECT_DIR$/codecat-commons/codecat-commons.iml" />
       <module fileurl="file://$PROJECT_DIR$/codecat-monitor/codecat-monitor.iml" filepath="$PROJECT_DIR$/codecat-monitor/codecat-monitor.iml" />
       <module fileurl="file://$PROJECT_DIR$/codecat-server/codecat-server.iml" filepath="$PROJECT_DIR$/codecat-server/codecat-server.iml" />
-      <module fileurl="file://$PROJECT_DIR$/codecat-test/codecat-test.iml" filepath="$PROJECT_DIR$/codecat-test/codecat-test.iml" />
     </modules>
   </component>
 </project>

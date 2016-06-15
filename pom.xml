@@ -11,10 +11,7 @@
     <modules>
         <module>codecat-monitor</module>
         <module>codecat-server</module>
-        <module>codecat-loader</module>
         <module>codecat-commons</module>
-        <module>codecat-test</module>
-        <module>codecat-monitor</module>
     </modules>
 
     <dependencies>
@@ -63,6 +60,11 @@
             <groupId>dom4j</groupId>
             <artifactId>dom4j</artifactId>
             <version>1.6.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+            <version>1.0.2.RELEASE</version>
         </dependency>
     </dependencies>
 </project>

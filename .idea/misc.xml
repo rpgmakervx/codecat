@@ -40,6 +40,7 @@
     <option name="ignoredFiles">
       <set>
         <option value="$PROJECT_DIR$/codecat-loader/pom.xml" />
+        <option value="$PROJECT_DIR$/codecat-test/pom.xml" />
       </set>
     </option>
   </component>
