@@ -9,11 +9,9 @@ import org.apache.log4j.Logger;
 import org.code4j.codecat.constants.Const;
 import org.code4j.codecat.monitor.invoker.ShellInvoker;
 import org.code4j.codecat.service.ReadConfigService;
+import org.code4j.codecat.util.PropertyHelper;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.util.Properties;
 
 /**
  * Description :
@@ -62,31 +60,33 @@ public class Listener extends JNotifyAdapter {
         File file = new File(path+File.separator+filename);
         //manifest文件元数据
         File propFile = new File(propPath);
-        //配置文件元数据
-        File configFile = new File(configPath);
         try{
             if (file.isFile()){
+                PropertyHelper helper = new PropertyHelper(propFile);
 //                FileOutputStream propOutput = new FileOutputStream(propFile);
-                Properties properties = new Properties();
-                if (! propFile.exists()){
-                    propFile.createNewFile();
-                    properties.load(new FileInputStream(propFile));
-                    //init MANIFEST.MF,if app.xml exists, Config-Exists property's value is true
-                    properties.setProperty(Const.CONFIGEXISTS, String.valueOf(configFile.exists()));
-                    properties.setProperty(Const.PLUGINEXISTS, String.valueOf(file.getName().endsWith(".class")));
-                    properties.store(new FileOutputStream(propFile), "");
-                }
+//                helper.updateProperties(Const.CONFIGEXISTS, String.valueOf(configFile.exists()));
+//                helper.updateProperties(Const.PLUGINEXISTS, String.valueOf(Boolean.FALSE));
+//                if (! propFile.exists()){
+//                    propFile.createNewFile();
+//                    properties.load(new FileInputStream(propFile));
+//                    //init MANIFEST.MF,if app.xml exists, Config-Exists property's value is true
+//                    properties.setProperty();
+//                    properties.setProperty();
+//                    properties.store(new FileOutputStream(propFile), "");
+//                }
                 boolean hasConfig;
                 boolean hasPlugin;
                 if (file.getName().endsWith(".class")){
-                    if (propFile.exists()){
-                        properties.load(new FileInputStream(propFile));
-                    }
-                    properties.setProperty(Const.PLUGINEXISTS, "true");
-                    properties.setProperty(Const.CONFIGEXISTS, properties.getProperty(Const.CONFIGEXISTS));
-                    properties.store(new FileOutputStream(propFile), "");
-                    logger.info("has config ? "+properties.getProperty(Const.CONFIGEXISTS));
-                    hasConfig = Boolean.valueOf(properties.getProperty(Const.CONFIGEXISTS));
+                    helper.updateProperties(Const.PLUGINEXISTS, String.valueOf(Boolean.TRUE));
+//                    if (propFile.exists()){
+//                        properties.load(new FileInputStream(propFile));
+//                    }
+//                    properties.setProperty(Const.PLUGINEXISTS, String.valueOf(Boolean.TRUE));
+//                    properties.setProperty(Const.CONFIGEXISTS, properties.getProperty(Const.CONFIGEXISTS));
+//                    properties.store(new FileOutputStream(propFile), "");
+                    logger.info("has config ? "+helper.getValue(Const.CONFIGEXISTS));
+                    logger.info("has plugin ? "+helper.getValue(Const.PLUGINEXISTS));
+                    hasConfig = Boolean.valueOf(helper.getValue(Const.CONFIGEXISTS));
                     if (hasConfig){
                         ReadConfigService service = new ReadConfigService(configPath);
                         logger.info("plugin's name : " + service.getFunctionClassName());
@@ -95,14 +95,16 @@ public class Listener extends JNotifyAdapter {
                         logger.info("config not exists");
                     }
                 }else if (file.getName().endsWith(".xml")){
-                    if (propFile.exists()){
-                        properties.load(new FileInputStream(propFile));
-                    }
-                    properties.setProperty(Const.CONFIGEXISTS, "true");
-                    properties.setProperty(Const.PLUGINEXISTS, properties.getProperty(Const.PLUGINEXISTS));
-                    properties.store(new FileOutputStream(propFile), "");
-                    logger.info("has plugin ? " + properties.getProperty(Const.PLUGINEXISTS));
-                    hasPlugin = Boolean.valueOf(properties.getProperty(Const.PLUGINEXISTS));
+                    helper.updateProperties(Const.CONFIGEXISTS, String.valueOf(Boolean.TRUE));
+//                    if (propFile.exists()){
+//                        properties.load(new FileInputStream(propFile));
+//                    }
+//                    properties.setProperty(Const.CONFIGEXISTS, "true");
+//                    properties.setProperty(Const.PLUGINEXISTS, properties.getProperty(Const.PLUGINEXISTS));
+//                    properties.store(new FileOutputStream(propFile), "");
+                    logger.info("has config ? "+helper.getValue(Const.CONFIGEXISTS));
+                    logger.info("has plugin ? "+helper.getValue(Const.PLUGINEXISTS));
+                    hasPlugin = Boolean.valueOf(helper.getValue(Const.PLUGINEXISTS));
                     if (hasPlugin){
                         ReadConfigService service = new ReadConfigService(configPath);
                         logger.info("plugin's name : " + service.getFunctionClassName());

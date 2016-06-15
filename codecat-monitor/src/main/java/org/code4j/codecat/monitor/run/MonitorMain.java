@@ -17,7 +17,7 @@ import java.util.concurrent.Executors;
  * 下午2:28
  */
 
-public class Main {
+public class MonitorMain {
 
     public static void main(String[] args) {
         ExecutorService pool = Executors.newCachedThreadPool();
