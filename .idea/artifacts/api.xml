@@ -1,0 +1,10 @@
+<component name="ArtifactManager">
+  <artifact name="api">
+    <output-path>$PROJECT_DIR$/codecat-api/out/artifacts/api</output-path>
+    <root id="root">
+      <element id="archive" name="codecat-api.jar">
+        <element id="module-output" name="codecat-api" />
+      </element>
+    </root>
+  </artifact>
+</component>

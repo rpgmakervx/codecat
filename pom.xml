@@ -12,6 +12,8 @@
         <module>codecat-monitor</module>
         <module>codecat-server</module>
         <module>codecat-commons</module>
+        <module>codecat-api</module>
+        <module>codecat-tests</module>
     </modules>
 
     <dependencies>
@@ -62,9 +64,20 @@
             <version>1.6.1</version>
         </dependency>
         <!--<dependency>-->
-            <!--<groupId>org.springframework.boot</groupId>-->
-            <!--<artifactId>spring-boot-starter-web</artifactId>-->
-            <!--<version>1.0.2.RELEASE</version>-->
+        <!--<groupId>org.springframework.boot</groupId>-->
+        <!--<artifactId>spring-boot-starter-web</artifactId>-->
+        <!--<version>1.0.2.RELEASE</version>-->
         <!--</dependency>-->
     </dependencies>
+
+    <repositories>
+        <repository>
+            <id>bintray</id>
+            <url>http://dl.bintray.com/typesafe/maven-releases/</url>
+        </repository>
+        <repository>
+            <id>oschina</id>
+            <url>http://maven.oschina.net/content/groups/public/</url>
+        </repository>
+    </repositories>
 </project>

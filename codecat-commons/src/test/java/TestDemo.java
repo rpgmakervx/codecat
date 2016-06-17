@@ -4,8 +4,8 @@
  *  下午2:23
  */
 
-import org.code4j.codecat.constants.Const;
-import org.code4j.codecat.util.XmlUtil;
+import org.code4j.codecat.commons.constants.Const;
+import org.code4j.codecat.commons.util.XmlUtil;
 import org.junit.Test;
 
 /**

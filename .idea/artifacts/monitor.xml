@@ -5,6 +5,8 @@
       <element id="archive" name="monitor.jar">
         <element id="module-output" name="codecat-monitor" />
         <element id="module-output" name="codecat-commons" />
+        <element id="module-output" name="codecat-server" />
+        <element id="module-output" name="codecat-api" />
       </element>
     </root>
   </artifact>

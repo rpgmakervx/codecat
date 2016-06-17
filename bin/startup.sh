@@ -11,7 +11,7 @@ for file in ${folder}/*; do
     temp_file=`basename $file`
     all_jar="${all_jar}:${folder}/${temp_file}"
 done
-main_class="org.code4j.codecat.monitor.run.Main"
+main_class="org.code4j.codecat.proxy.run.Main"
 cd "bin"
 if [ "$1" = "" ];then
         java -cp $all_jar$main_jar $main_class $monitor_port

@@ -3,9 +3,11 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/codecat.iml" filepath="$PROJECT_DIR$/codecat.iml" />
+      <module fileurl="file://$PROJECT_DIR$/codecat-api/codecat-api.iml" filepath="$PROJECT_DIR$/codecat-api/codecat-api.iml" />
       <module fileurl="file://$PROJECT_DIR$/codecat-commons/codecat-commons.iml" filepath="$PROJECT_DIR$/codecat-commons/codecat-commons.iml" />
       <module fileurl="file://$PROJECT_DIR$/codecat-monitor/codecat-monitor.iml" filepath="$PROJECT_DIR$/codecat-monitor/codecat-monitor.iml" />
       <module fileurl="file://$PROJECT_DIR$/codecat-server/codecat-server.iml" filepath="$PROJECT_DIR$/codecat-server/codecat-server.iml" />
+      <module fileurl="file://$PROJECT_DIR$/codecat-tests/codecat-tests.iml" filepath="$PROJECT_DIR$/codecat-tests/codecat-tests.iml" />
     </modules>
   </component>
 </project>

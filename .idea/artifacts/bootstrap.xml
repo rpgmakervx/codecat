@@ -1,0 +1,13 @@
+<component name="ArtifactManager">
+  <artifact name="bootstrap">
+    <output-path>$PROJECT_DIR$/codecat-server/out/artifacts/realserver</output-path>
+    <root id="root">
+      <element id="archive" name="bootstrap.jar">
+        <element id="module-output" name="codecat-server" />
+        <element id="module-output" name="codecat-commons" />
+        <element id="module-output" name="codecat-api" />
+      </element>
+      <element id="directory" name="lib" />
+    </root>
+  </artifact>
+</component>
