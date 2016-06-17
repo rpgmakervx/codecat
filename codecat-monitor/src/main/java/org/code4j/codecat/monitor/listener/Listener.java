@@ -3,6 +3,7 @@ package org.code4j.codecat.monitor.listener;
 import net.contentobjects.jnotify.JNotifyAdapter;
 import org.apache.log4j.Logger;
 import org.code4j.codecat.commons.constants.Const;
+import org.code4j.codecat.commons.util.JarHelper;
 import org.code4j.codecat.commons.util.PropertyHelper;
 import org.code4j.codecat.monitor.dynamicproxy.factory.ProxyFactory;
 import org.code4j.codecat.monitor.load.JarLoader;
@@ -11,6 +12,7 @@ import org.code4j.codecat.realserver.server.IRealServer;
 import org.code4j.codecat.realserver.server.RealServer;
 
 import java.io.File;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.regex.Matcher;
@@ -32,8 +34,7 @@ public class Listener extends JNotifyAdapter {
     @Override
     public void fileCreated(int i, String s, String s1) {
         logger.info("创建了一个文件" + s + " | " + s1);
-        dealNewFile(s,s1);
-
+        handleNewFile(s + File.separator, s1);
     }
 
     @Override
@@ -51,6 +52,25 @@ public class Listener extends JNotifyAdapter {
         logger.info("删除了一个文件 " + rootPath + name);
     }
 
+    private void handleNewFile(String path,String filename){
+        File file = new File(path+filename);
+        try{
+            if (file.isFile()){
+                Matcher matcher = pattern.matcher(file.getName());
+                //插件类型的文件
+                if (matcher.matches()){
+                    List<String> classnames = JarHelper.getClassFileName(path+filename);
+                    String[] clazznames = new String[classnames.size()];
+                    pool.submit(new DelegateServerTask(path, filename, classnames.toArray(clazznames)));
+                }
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            logger.error(e.getMessage());
+        }
+    }
+
+    @Deprecated
     private void dealNewFile(String path,String filename){
         //get current path to find real plugin's location
         //有可能你的插件是部署在app下面的某个文件夹下，
@@ -109,7 +129,7 @@ public class Listener extends JNotifyAdapter {
      * @param plugin_name
      * @param pluginName
      */
-    private void delegateServerStartup(String app_path,String plugin_name,String pluginName){
+    private void delegateServerStartup(String app_path,String plugin_name,String ... pluginName){
         ProxyFactory factory = new ProxyFactory();
         RealServer server = new RealServer();
         IRealServer delegateServer = factory.getProxy(server
@@ -139,9 +159,9 @@ public class Listener extends JNotifyAdapter {
         private String path;
         private String pluginName;
 
-        private String className;
+        private String[] className;
 
-        public DelegateServerTask(String path,String pluginName,String className){
+        public DelegateServerTask(String path,String pluginName,String ... className){
             this.path = path;
             this.pluginName = pluginName;
             this.className = className;

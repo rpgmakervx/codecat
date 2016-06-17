@@ -39,10 +39,13 @@ public interface Const {
     public static final String PLUGINEXISTS = "PluginExists";
     public static final String PLUGINNAME = "PluginName";
 
-    public static final String PLUGIN_PATTERN = ".*\\.(class|jar)";
+    public static final String PLUGIN_PATTERN = ".*\\.(jar)";
+    public static final String CLASS_PATTERN = ".*\\.(class)";
 
     public static final String FUNCTIONCLASS = "function-class";
 
     public static final String DELEGATEMATHOD_SETUP = "setup";
+
+    public static final String DOT = ".";
 
 }

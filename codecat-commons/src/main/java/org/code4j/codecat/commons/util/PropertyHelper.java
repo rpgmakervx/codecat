@@ -18,7 +18,7 @@ import java.util.Set;
  * Created by YangZH on 16-6-16
  * 上午1:35
  */
-
+@Deprecated
 public class PropertyHelper {
 
     private Logger logger = Logger.getLogger(PropertyHelper.class);

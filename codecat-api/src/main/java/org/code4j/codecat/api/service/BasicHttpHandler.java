@@ -8,7 +8,7 @@ import io.netty.handler.codec.http.HttpResponseStatus;
 import org.apache.log4j.Logger;
 import org.code4j.codecat.api.response.factory.HttpResponseFactory;
 
-import java.net.InetSocketAddress;
+import java.net.SocketAddress;
 
 /**
  * Description :
@@ -33,11 +33,11 @@ public abstract class BasicHttpHandler extends ChannelInboundHandlerAdapter{
     public final void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         FullHttpRequest request = (FullHttpRequest) msg;
         String uri = request.uri();
-        System.out.println("handler总长度： "+ctx.pipeline().toMap().size());
         FullHttpResponse response = null;
-        InetSocketAddress insocket = (InetSocketAddress) ctx.channel()
-                .remoteAddress();
-        String clientIP = insocket.getAddress().getHostAddress()+":"+insocket.getPort();
+        SocketAddress insocket = ctx.channel().localAddress();
+        String clientIP = insocket.toString();
+        System.out.println("server IP ： "+insocket.toString());
+        System.out.println("visit uri ： "+request.uri());
         if (this.getClass().isAnnotationPresent(Path.class)){
             Path path = this.getClass().getAnnotation(Path.class);
             if (uri.equals(path.value())){

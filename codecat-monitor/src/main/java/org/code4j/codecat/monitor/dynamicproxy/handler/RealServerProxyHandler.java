@@ -11,6 +11,8 @@ import org.code4j.codecat.realserver.server.IRealServer;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Description :
@@ -24,20 +26,27 @@ public class RealServerProxyHandler implements InvocationHandler {
 
     private JarLoader loader;
 
-    private String pluginName;
+    private List<String> pluginNames;
 
-    public RealServerProxyHandler(IRealServer delegatedServer, JarLoader loader,String pluginName){
+    public RealServerProxyHandler(IRealServer delegatedServer, JarLoader loader,List<String> pluginNames){
         this.delegatedServer = delegatedServer;
         this.loader = loader;
-        this.pluginName = pluginName;
+        this.pluginNames = pluginNames;
+    }
+    public RealServerProxyHandler(IRealServer delegatedServer, JarLoader loader,String ... pluginNames){
+        this.delegatedServer = delegatedServer;
+        this.loader = loader;
+        this.pluginNames = Arrays.asList(pluginNames);
     }
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         Object result = null;
         if (method.getName().equals(Const.DELEGATEMATHOD_SETUP)){
-            delegatedServer.addHandler(loader.loadBasicService(pluginName).getClass());
-            System.out.println("invoke loadBasicService : "+pluginName);
+            for (String pluginName:this.pluginNames){
+                delegatedServer.addHandler(loader.loadBasicService(pluginName).getClass());
+                System.out.println("invoke loadBasicService : "+pluginName);
+            }
             result = method.invoke(delegatedServer,args);
         }else{
             result = method.invoke(delegatedServer,args);

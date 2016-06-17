@@ -17,7 +17,7 @@ import java.util.Iterator;
  * Created by YangZH on 16-6-15
  * 下午12:10
  */
-
+@Deprecated
 public class XmlUtil {
 
     private static SAXReader reader = new SAXReader();

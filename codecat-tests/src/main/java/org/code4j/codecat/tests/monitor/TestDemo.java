@@ -21,9 +21,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Proxy;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.sql.Connection;
-import java.sql.Driver;
-import java.sql.Statement;
 import java.util.List;
 import java.util.Properties;
 import java.util.regex.Matcher;
@@ -122,20 +119,20 @@ public class TestDemo {
     public void testUrlLoad(){
         try {
             // 创建一个URL数组
-            URL[] urls = new URL[]{new URL("file:/home/code4j/oschina/mysql-connector-java-5.1.38.jar")};
+            URL[] urls = new URL[]{new URL("file:/home/code4j/osproject/codecat/apps/handler.jar")};
             // 以默认的ClassLoader作为父ClassLoader，创建URLClassLoader
             URLClassLoader classLoader = new URLClassLoader(urls);
-            Driver driver = (Driver)classLoader.
-                    loadClass("com.mysql.jdbc.Driver").newInstance();
-            // 创建一个设置JDBC连接属性的Properties对象
-            Properties props = new Properties();
-            // 至少需要为该对象传入user和password两个属性
-            props.setProperty("user" , "root");
-            props.setProperty("password" , "xingtianyu");
-            // 调用Driver对象的connect方法来取得数据库连接
-            Connection conn = driver.connect("jdbc:mysql://localhost:3306/mysql" , props);
-            Statement statement = (Statement) conn.createStatement();
-            System.out.println(statement.execute("show databases"));
+            Class clazz = (Class) classLoader.loadClass("org.code4j.test.MathHandler");
+            clazz.newInstance();
+//            // 创建一个设置JDBC连接属性的Properties对象
+//            Properties props = new Properties();
+//            // 至少需要为该对象传入user和password两个属性
+//            props.setProperty("user" , "root");
+//            props.setProperty("password" , "xingtianyu");
+//            // 调用Driver对象的connect方法来取得数据库连接
+//            Connection conn = driver.connect("jdbc:mysql://localhost:3306/mysql" , props);
+//            Statement statement = (Statement) conn.createStatement();
+//            System.out.println(statement.execute("show databases"));
         } catch (Exception e) {
             e.printStackTrace();
         }

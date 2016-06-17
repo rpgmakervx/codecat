@@ -19,7 +19,7 @@ import java.lang.reflect.Proxy;
 public class ProxyFactory {
 
 
-    public IRealServer getProxy(IRealServer server,JarLoader loader,String pluginName){
+    public IRealServer getProxy(IRealServer server,JarLoader loader,String ... pluginName){
         RealServerProxyHandler handler =
                 new RealServerProxyHandler(server,loader,pluginName);
         return (IRealServer) Proxy.newProxyInstance(server.getClass().getClassLoader()
