@@ -20,6 +20,7 @@ import org.apache.log4j.Logger;
 import org.code4j.codecat.commons.dao.RequestDataDao;
 import org.code4j.codecat.monitor.listener.PortCounter;
 import org.code4j.codecat.monitor.proxy.client.MonitorClient;
+import org.code4j.codecat.commons.util.PathPortPair;
 import org.code4j.codecat.monitor.proxy.util.WebUtil;
 import org.code4j.codecat.commons.util.JSONUtil;
 
@@ -62,10 +63,11 @@ public class PostRequestHandler extends ChannelInboundHandlerAdapter {
         super.exceptionCaught(ctx, cause);
     }
 
-    private void response(ChannelHandlerContext ctx,byte[] contents,Header[] headers) throws UnsupportedEncodingException {
+    private void response(ChannelHandlerContext ctx,byte[] contents,Header[] headers,HttpResponseStatus status)
+            throws UnsupportedEncodingException {
         ByteBuf byteBuf = Unpooled.wrappedBuffer(contents, 0, contents.length);
         FullHttpResponse response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1,
-                HttpResponseStatus.OK,byteBuf);
+                status,byteBuf);
         logger.info("response header ---------------");
         for (Header header:headers){
             response.headers().set(header.getName(),header.getValue());
@@ -75,10 +77,10 @@ public class PostRequestHandler extends ChannelInboundHandlerAdapter {
         ctx.channel().writeAndFlush(response);
         ctx.close();
     }
-    private void response(ChannelHandlerContext ctx,byte[] contents) throws UnsupportedEncodingException {
+    private void response(ChannelHandlerContext ctx,byte[] contents,HttpResponseStatus status)
+            throws UnsupportedEncodingException {
         ByteBuf byteBuf = Unpooled.wrappedBuffer(contents, 0, contents.length);
-        FullHttpResponse response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1,
-                HttpResponseStatus.OK,byteBuf);
+        FullHttpResponse response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1,status,byteBuf);
         logger.info("没有请求头，回写数据");
         ctx.channel().writeAndFlush(response);
         ctx.close();
@@ -95,8 +97,14 @@ public class PostRequestHandler extends ChannelInboundHandlerAdapter {
 
         @Override
         public void run() {
-            HttpRequest request = (HttpRequest)msg;
             try {
+                HttpRequest request = (HttpRequest)msg;
+                if (!PathPortPair.hasPath(request.uri())){
+                    String notfound = "<h1 align='center'>404 NOT FOUND!</h1>";
+                    response(ctx,notfound.getBytes(),HttpResponseStatus.NOT_FOUND);
+                }
+                int port = PathPortPair.getPort(request.uri());
+                address = new InetSocketAddress(LOCALHOST, port);
                 if (request.method().equals(HttpMethod.POST)){
                     CloseableHttpResponse response = null;
                     MonitorClient client = new MonitorClient(address, WebUtil.ROOT.equals(request.uri())?"":request.uri());
@@ -130,9 +138,9 @@ public class PostRequestHandler extends ChannelInboundHandlerAdapter {
                                 response = client.postMultipartEntityRequest(JSONUtil.requestParam(paramstr), request.headers());
                                 String responseStr = client.getResponse(response);
                                 bytes = responseStr.getBytes();
-                                response(ctx, bytes, response.getAllHeaders());
+                                response(ctx, bytes, response.getAllHeaders(),HttpResponseStatus.OK);
                             }else{
-                                response(ctx, cache.getBytes());
+                                response(ctx, cache.getBytes(),HttpResponseStatus.OK);
                             }
                         }catch (Exception e){
                             e.printStackTrace();
@@ -150,10 +158,10 @@ public class PostRequestHandler extends ChannelInboundHandlerAdapter {
                                 String responseStr = client.getResponse(response);
                                 dao.save(request.uri(),message,responseStr);
                                 bytes = responseStr.getBytes();
-                                response(ctx, bytes, response.getAllHeaders());
+                                response(ctx, bytes, response.getAllHeaders(),HttpResponseStatus.OK);
                             }else{
                                 logger.info("cache命中！");
-                                response(ctx, cache.getBytes());
+                                response(ctx, cache.getBytes(),HttpResponseStatus.OK);
                             }
                         }else{
                             logger.info("key-value 数据");
@@ -164,10 +172,10 @@ public class PostRequestHandler extends ChannelInboundHandlerAdapter {
                                 String responseStr = client.getResponse(response);
                                 dao.save(request.uri(),message,responseStr);
                                 bytes = responseStr.getBytes();
-                                response(ctx, bytes, response.getAllHeaders());
+                                response(ctx, bytes, response.getAllHeaders(),HttpResponseStatus.OK);
                             }else {
                                 logger.info("cache命中！");
-                                response(ctx, cache.getBytes());
+                                response(ctx, cache.getBytes(),HttpResponseStatus.OK);
                             }
                         }
                     }

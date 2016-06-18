@@ -1,8 +1,4 @@
-package org.code4j.codecat.monitor.listener;/**
- * Description : 
- * Created by YangZH on 16-6-14
- *  下午10:30
- */
+package org.code4j.codecat.monitor.listener;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -13,7 +9,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 
 public class PortCounter {
-    public static AtomicInteger port_incr = new AtomicInteger(20000);
+    private static AtomicInteger port_incr = new AtomicInteger(20000);
     private PortCounter(){}
     public static int incr(){
         return port_incr.incrementAndGet();

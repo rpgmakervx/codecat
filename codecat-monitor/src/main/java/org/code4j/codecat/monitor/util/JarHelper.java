@@ -1,4 +1,4 @@
-package org.code4j.codecat.commons.util;/**
+package org.code4j.codecat.monitor.util;/**
  * Description : 
  * Created by YangZH on 16-6-17
  *  下午9:00
@@ -8,6 +8,8 @@ import org.code4j.codecat.api.service.BasicHttpHandler;
 import org.code4j.codecat.commons.constants.Const;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
@@ -26,9 +28,9 @@ import java.util.regex.Pattern;
 
 public class JarHelper {
 
-    private static Pattern pattern = Pattern.compile(Const.CLASS_PATTERN);
 
     public static List<String> getClassFileName(String jarFilePath){
+        Pattern pattern = Pattern.compile(Const.CLASS_PATTERN);
         Matcher matcher = null;
         List<String> classnames = new ArrayList<>();
         try {
@@ -62,4 +64,34 @@ public class JarHelper {
         }
         return classnames;
     }
+
+    /**
+     * 读取jar内的app.xml
+     * @param jarFilePath
+     * @return
+     */
+    public static InputStream readConfig(String jarFilePath,String config_pattern){
+        Pattern pattern = Pattern.compile(Const.APPXML);
+        try {
+            JarFile jarFile = new JarFile(jarFilePath);
+            Enumeration<JarEntry> entrys = jarFile.entries();
+            Matcher matcher = null;
+            while (entrys.hasMoreElements()) {
+                JarEntry jarEntry = entrys.nextElement();
+                String filename = jarEntry.getName();
+                if (matcher == null){
+                    matcher = pattern.matcher(filename);
+                }else{
+                    matcher.reset(filename);
+                }
+                if (matcher.matches()){
+                    return jarFile.getInputStream(jarEntry);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 }

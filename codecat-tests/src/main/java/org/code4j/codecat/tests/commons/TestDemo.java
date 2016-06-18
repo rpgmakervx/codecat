@@ -5,7 +5,7 @@ package org.code4j.codecat.tests.commons; /**
  */
 
 import org.code4j.codecat.commons.constants.Const;
-import org.code4j.codecat.commons.util.JarHelper;
+import org.code4j.codecat.monitor.util.JarHelper;
 import org.code4j.codecat.commons.util.XmlUtil;
 import org.junit.Test;
 

@@ -12,10 +12,12 @@ import io.netty.handler.codec.http.*;
 import org.apache.http.Header;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.log4j.Logger;
+import org.code4j.codecat.commons.util.PathPortPair;
 import org.code4j.codecat.monitor.listener.PortCounter;
 import org.code4j.codecat.monitor.proxy.client.MonitorClient;
 import org.code4j.codecat.monitor.proxy.util.WebUtil;
 
+import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.InetSocketAddress;
 import java.util.concurrent.ExecutorService;
@@ -59,16 +61,24 @@ public class ImageHandler extends ChannelInboundHandlerAdapter{
         ctx.close();
     }
 
-    private void response(ChannelHandlerContext ctx,byte[] contents,Header[] headers) throws UnsupportedEncodingException {
+    private void response(ChannelHandlerContext ctx,byte[] contents,Header[] headers,HttpResponseStatus status) throws UnsupportedEncodingException {
         ByteBuf byteBuf = Unpooled.wrappedBuffer(contents, 0, contents.length);
         FullHttpResponse response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1,
-                HttpResponseStatus.OK,byteBuf);
+                status,byteBuf);
         logger.info("response header ---------------");
         for (Header header:headers){
             response.headers().set(header.getName(),header.getValue());
             logger.info(header.getName()+"::"+header.getValue());
         }
         logger.info("end header ---------------");
+        ctx.channel().writeAndFlush(response);
+        ctx.close();
+    }
+
+    private void response(ChannelHandlerContext ctx,byte[] contents,HttpResponseStatus status) throws Exception {
+        ByteBuf byteBuf = Unpooled.wrappedBuffer(contents, 0, contents.length);
+        FullHttpResponse response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1,status,byteBuf);
+        logger.info("没有请求头，回写数据");
         ctx.channel().writeAndFlush(response);
         ctx.close();
     }
@@ -84,8 +94,16 @@ public class ImageHandler extends ChannelInboundHandlerAdapter{
         }
         @Override
         public void run() {
-            HttpRequest request = (HttpRequest) msg;
             try {
+                HttpRequest request = (HttpRequest) msg;
+                if (!PathPortPair.hasPath(request.uri()) && !File.separator.equals(request.uri())){
+                    String notfound = "<h1 align='center'>404 NOT FOUND!</h1>";
+                    response(ctx,notfound.getBytes(),HttpResponseStatus.NOT_FOUND);
+                    return ;
+                }
+                System.out.println("uri -->"+request.uri()+"|");
+                int port = PathPortPair.getPort(request.uri());
+                address = new InetSocketAddress(LOCALHOST, port);
                 if (request.method().equals(HttpMethod.GET)){
                     Pattern pattern = Pattern.compile(".+\\.("+ WebUtil.IMAGE+").*");
                     String context = "";
@@ -98,7 +116,7 @@ public class ImageHandler extends ChannelInboundHandlerAdapter{
                         logger.info("读取到图片 " + request.uri());
                         response = client.fetchImage();
                         bytes = client.getResponseBytes(response);
-                        response(ctx, bytes, response.getAllHeaders());
+                        response(ctx, bytes, response.getAllHeaders(),HttpResponseStatus.OK);
                     }else{
                         ctx.fireChannelRead(request);
                     }

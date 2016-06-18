@@ -13,10 +13,12 @@ import org.apache.http.Header;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.log4j.Logger;
 import org.code4j.codecat.commons.dao.RequestDataDao;
+import org.code4j.codecat.commons.util.PathPortPair;
 import org.code4j.codecat.monitor.listener.PortCounter;
 import org.code4j.codecat.monitor.proxy.client.MonitorClient;
 import org.code4j.codecat.monitor.proxy.util.WebUtil;
 
+import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.InetSocketAddress;
 import java.util.concurrent.ExecutorService;
@@ -61,10 +63,10 @@ public class GetRequestHandler extends ChannelInboundHandlerAdapter {
         cause.printStackTrace();
     }
 
-    private void response(ChannelHandlerContext ctx,byte[] contents,Header[] headers) throws UnsupportedEncodingException {
+    private void response(ChannelHandlerContext ctx,byte[] contents,Header[] headers,HttpResponseStatus status) throws UnsupportedEncodingException {
         ByteBuf byteBuf = Unpooled.wrappedBuffer(contents, 0, contents.length);
         FullHttpResponse response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1,
-                HttpResponseStatus.OK,byteBuf);
+                status,byteBuf);
         logger.debug("response header ---------------");
         for (Header header:headers){
             response.headers().set(header.getName(),header.getValue());
@@ -74,10 +76,10 @@ public class GetRequestHandler extends ChannelInboundHandlerAdapter {
         ctx.channel().writeAndFlush(response);
         ctx.close();
     }
-    private void response(ChannelHandlerContext ctx,byte[] contents) throws UnsupportedEncodingException {
+    private void response(ChannelHandlerContext ctx,byte[] contents,HttpResponseStatus status) throws UnsupportedEncodingException {
         ByteBuf byteBuf = Unpooled.wrappedBuffer(contents, 0, contents.length);
         FullHttpResponse response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1,
-                HttpResponseStatus.OK,byteBuf);
+                status,byteBuf);
         ctx.channel().writeAndFlush(response);
         ctx.close();
     }
@@ -96,10 +98,16 @@ public class GetRequestHandler extends ChannelInboundHandlerAdapter {
             String context = "";
             byte[] bytes = null;
             CloseableHttpResponse response = null;
-            HttpRequest request = (HttpRequest) msg;
-            boolean isGet = request.method().equals(HttpMethod.GET);
-            boolean isJSON = "application/json".equals(request.headers().get("Content-Type"));
             try {
+                HttpRequest request = (HttpRequest) msg;
+                if (!PathPortPair.hasPath(request.uri()) && !File.separator.equals(request.uri())){
+                    String notfound = "<h1 align='center'>404 NOT FOUND!</h1>";
+                    response(ctx,notfound.getBytes(),HttpResponseStatus.NOT_FOUND);
+                }
+                int port = PathPortPair.getPort(request.uri());
+                address = new InetSocketAddress(LOCALHOST, port);
+                boolean isGet = request.method().equals(HttpMethod.GET);
+                boolean isJSON = "application/json".equals(request.headers().get("Content-Type"));
                 if (isGet){
                     MonitorClient client = new MonitorClient(address, WebUtil.ROOT.equals(request.uri())?"":request.uri());
                     if (isJSON){
@@ -112,10 +120,10 @@ public class GetRequestHandler extends ChannelInboundHandlerAdapter {
                             context = client.getResponse(response);
                             dao.save(request.uri(),"",context);
                             bytes = context.getBytes();
-                            response(ctx, bytes, response.getAllHeaders());
+                            response(ctx, bytes, response.getAllHeaders(),HttpResponseStatus.OK);
                         }else{
                             logger.debug("cache命中！ " + cache);
-                            response(ctx, cache.getBytes());
+                            response(ctx, cache.getBytes(),HttpResponseStatus.OK);
                         }
                     }else{
                         logger.debug("GET 页面请求");
@@ -123,7 +131,7 @@ public class GetRequestHandler extends ChannelInboundHandlerAdapter {
                         context = client.getResponse(response);
                         //CDN缓存
                         bytes = context.getBytes();
-                        response(ctx, bytes, response.getAllHeaders());
+                        response(ctx, bytes, response.getAllHeaders(),HttpResponseStatus.OK);
                     }
                 }else{
                     logger.debug("非GET请求或JSON类型  " + request.uri());

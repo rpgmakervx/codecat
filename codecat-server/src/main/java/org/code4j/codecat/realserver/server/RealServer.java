@@ -65,7 +65,7 @@ public class RealServer implements IRealServer{
     public void launch(int port){
         try {
             future = bootstrap.bind(port).sync();
-            logger.info("server started completely");
+            logger.info("server started completely port is : "+port);
             future.channel().closeFuture().sync();
         } catch (InterruptedException e) {
             e.printStackTrace();

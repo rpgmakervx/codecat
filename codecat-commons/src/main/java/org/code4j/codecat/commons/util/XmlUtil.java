@@ -17,7 +17,6 @@ import java.util.Iterator;
  * Created by YangZH on 16-6-15
  * 下午12:10
  */
-@Deprecated
 public class XmlUtil {
 
     private static SAXReader reader = new SAXReader();
@@ -28,6 +27,7 @@ public class XmlUtil {
         try {
             document = reader.read(is);
             root = document.getRootElement();
+            System.out.println(root.getName());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -44,14 +44,10 @@ public class XmlUtil {
     }
 
     private Element getElementByKey(String key,Element ele){
-        Iterator<Element> elementIterator = null;
-        if (ele.isRootElement()){
-            elementIterator = root.elementIterator();
-        }else{
-            elementIterator = ele.elementIterator();
-        }
+        Iterator<Element> elementIterator = ele.elementIterator();
         while (elementIterator.hasNext()){
             Element element = elementIterator.next();
+            System.out.println(element.getName());
             if (element.getName().equals(key)){
                 return element;
             }else{

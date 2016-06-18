@@ -4,6 +4,8 @@ package org.code4j.codecat.tests.monitor; /**
  *  上午1:06
  */
 
+import org.code4j.codecat.commons.constants.Const;
+import org.code4j.codecat.commons.util.XmlUtil;
 import org.code4j.codecat.monitor.dynamicproxy.factory.ProxyFactory;
 import org.code4j.codecat.monitor.listener.PortCounter;
 import org.code4j.codecat.monitor.load.JarLoader;
@@ -14,15 +16,15 @@ import org.code4j.codecat.tests.monitor.pojo.IUser;
 import org.code4j.codecat.tests.monitor.pojo.User;
 import org.junit.Test;
 
-import java.io.FileInputStream;
-import java.io.IOException;
+import java.io.*;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Proxy;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -122,9 +124,12 @@ public class TestDemo {
             URL[] urls = new URL[]{new URL("file:/home/code4j/osproject/codecat/apps/handler.jar")};
             // 以默认的ClassLoader作为父ClassLoader，创建URLClassLoader
             URLClassLoader classLoader = new URLClassLoader(urls);
-            Class clazz = (Class) classLoader.loadClass("org.code4j.test.MathHandler");
-            clazz.newInstance();
-//            // 创建一个设置JDBC连接属性的Properties对象
+            Class clazz = (Class) classLoader.loadClass("org.code4j.test.TimerHandler");
+            System.out.println(clazz.getResource(Const.APPXML).getPath());
+            XmlUtil util = new XmlUtil(clazz.getResourceAsStream(Const.APPXML));
+            System.out.println(util.getTextByTagName(Const.ROOT_PATH));
+//
+// 创建一个设置JDBC连接属性的Properties对象
 //            Properties props = new Properties();
 //            // 至少需要为该对象传入user和password两个属性
 //            props.setProperty("user" , "root");
@@ -142,5 +147,48 @@ public class TestDemo {
         Pattern pattern = Pattern.compile(".*\\.(class|jar)");
         Matcher matcher = pattern.matcher("xxx.text.jars");
         System.out.println(matcher.matches());
+
+        String path = "/root/user/index";
+        System.out.println();
+
+        System.out.println(path.substring(path.lastIndexOf(path.split(File.separator)[1])+path.split(File.separator)[1].length()));;
+    }
+
+    @Test
+    public void testJar() throws IOException {
+        Pattern pattern = Pattern.compile(Const.APPXML);
+        JarFile jarFile = new JarFile("/home/code4j/osproject/codecat/apps/handler.jar");
+        Enumeration<JarEntry> entrys = jarFile.entries();
+        Matcher matcher = null;
+        while (entrys.hasMoreElements()) {
+            JarEntry jarEntry = entrys.nextElement();
+            String filename = jarEntry.getName();
+            if (matcher == null){
+                matcher = pattern.matcher(filename);
+            }else{
+                matcher.reset(filename);
+            }
+            if (matcher.matches()){
+                BufferedReader reader = new BufferedReader(
+                        new InputStreamReader(jarFile.getInputStream(jarEntry)));
+                StringBuffer buffer = new StringBuffer();
+                String line = "";
+                while ((line = reader.readLine()) != null){
+                    buffer.append(line);
+                }
+                System.out.println(buffer.toString());
+            }
+
+        }
+    }
+
+    @Test
+    public void testSeperator(){
+//        String[] segement = "/".split(File.separator);
+//        System.out.println(segement[0]);
+
+        Map<String,String> map = new HashMap<>();
+        map.put("","xingtianyu");
+        System.out.println(map.get(""));
     }
 }

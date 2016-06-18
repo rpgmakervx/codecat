@@ -7,7 +7,10 @@ import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import org.apache.log4j.Logger;
 import org.code4j.codecat.api.response.factory.HttpResponseFactory;
+import org.code4j.codecat.commons.constants.Const;
+import org.code4j.codecat.commons.util.PathPortPair;
 
+import java.io.File;
 import java.net.SocketAddress;
 
 /**
@@ -32,23 +35,20 @@ public abstract class BasicHttpHandler extends ChannelInboundHandlerAdapter{
     @Override
     public final void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         FullHttpRequest request = (FullHttpRequest) msg;
-        String uri = request.uri();
-        FullHttpResponse response = null;
         SocketAddress insocket = ctx.channel().localAddress();
-        String clientIP = insocket.toString();
         System.out.println("server IP ： "+insocket.toString());
-        System.out.println("visit uri ： "+request.uri());
+        String uri = getURI(request.uri());
+        System.out.println("visit uri ： "+uri);
+        if (!PathPortPair.hasPath(getURI(request.uri()))){
+            responseTo(ctx, Const.NOTFOUNG, HttpResponseStatus.NOT_FOUND);
+        }
         if (this.getClass().isAnnotationPresent(Path.class)){
             Path path = this.getClass().getAnnotation(Path.class);
             if (uri.equals(path.value())){
-                String result = String.valueOf(service(clientIP));
-                response = HttpResponseFactory.getResponse(result, HttpResponseStatus.OK);
-                ctx.writeAndFlush(response);
-                ctx.close();
+                String result = String.valueOf(service(request.uri()));
+                responseTo(ctx, result, HttpResponseStatus.OK);
             }else if (ctx.pipeline().last() == this){
-                String notfound = "<h1 align='center'>404 NOT FOUND!</h1>";
-                response = HttpResponseFactory.getResponse(notfound, HttpResponseStatus.NOT_FOUND);
-                ctx.writeAndFlush(response);
+                responseTo(ctx, Const.NOTFOUNG, HttpResponseStatus.NOT_FOUND);
             }else{
                 ctx.fireChannelRead(msg);
             }
@@ -72,4 +72,24 @@ public abstract class BasicHttpHandler extends ChannelInboundHandlerAdapter{
         cause.printStackTrace();
     }
 
+
+    private void responseTo(ChannelHandlerContext ctx,String content, HttpResponseStatus status){
+        FullHttpResponse response =  HttpResponseFactory.getResponse(content, status);
+        ctx.writeAndFlush(response);
+        ctx.close();
+    }
+
+    private String getURI(String url){
+        if (url.equals(File.separator)){
+            return "";
+        }
+        String[] path_segement = url.split(File.separator);
+        String root_path = path_segement[1];
+        return url.substring(root_path.lastIndexOf(root_path) + root_path.length()+1);
+    }
+
+    private String getRoot(String url){
+        String[] path_segement = url.split(File.separator);
+        return path_segement[1];
+    }
 }

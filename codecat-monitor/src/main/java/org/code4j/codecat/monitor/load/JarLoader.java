@@ -6,6 +6,11 @@ package org.code4j.codecat.monitor.load;/**
 
 
 import org.code4j.codecat.api.service.BasicHttpHandler;
+import org.code4j.codecat.commons.constants.Const;
+import org.code4j.codecat.commons.util.XmlUtil;
+import org.code4j.codecat.monitor.listener.PortCounter;
+import org.code4j.codecat.commons.util.PathPortPair;
+import org.code4j.codecat.monitor.util.JarHelper;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -23,6 +28,9 @@ public class JarLoader {
 
 
     public String pluginPath;
+
+    public boolean xmlLoaded = false;
+
     public JarLoader(String app_path,String plugin_name) {
         this.pluginPath = app_path+File.separator+plugin_name;
     }
@@ -41,6 +49,16 @@ public class JarLoader {
             URLClassLoader classLoader = new URLClassLoader(urls);
             Class<? extends BasicHttpHandler> clazz =
                     (Class<? extends BasicHttpHandler>) classLoader.loadClass(classname);
+            if (!xmlLoaded){
+                XmlUtil util = new XmlUtil(JarHelper.readConfig(this.pluginPath,Const.APPXML));
+                String path = util.getTextByTagName(Const.ROOT_PATH);
+                if (PathPortPair.hasPath(path)){
+                    return null;
+                }
+                PathPortPair.storePair(path, PortCounter.incr());
+                System.out.println("load path --> "+path);
+                xmlLoaded = true;
+            }
             return clazz.newInstance();
         } catch (Exception e) {
             e.printStackTrace();

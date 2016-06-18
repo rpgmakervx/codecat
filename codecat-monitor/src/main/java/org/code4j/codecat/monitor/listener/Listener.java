@@ -3,7 +3,7 @@ package org.code4j.codecat.monitor.listener;
 import net.contentobjects.jnotify.JNotifyAdapter;
 import org.apache.log4j.Logger;
 import org.code4j.codecat.commons.constants.Const;
-import org.code4j.codecat.commons.util.JarHelper;
+import org.code4j.codecat.monitor.util.JarHelper;
 import org.code4j.codecat.commons.util.PropertyHelper;
 import org.code4j.codecat.monitor.dynamicproxy.factory.ProxyFactory;
 import org.code4j.codecat.monitor.load.JarLoader;
@@ -75,7 +75,7 @@ public class Listener extends JNotifyAdapter {
         //get current path to find real plugin's location
         //有可能你的插件是部署在app下面的某个文件夹下，
         //这样的话app.xml就要基于当前的路径寻找
-        String configPath = path+File.separator+Const.CONFIGFILE;
+        String configPath = path+Const.APPXML;
         logger.info("configPath : "+configPath);
         String propPath = path+File.separator+Const.PROPERTIESFILE;
         logger.info("propPath : "+propPath);
@@ -136,7 +136,7 @@ public class Listener extends JNotifyAdapter {
                 ,new JarLoader(app_path,plugin_name),pluginName);
         delegateServer.initHandler();
         delegateServer.setup();
-        delegateServer.launch(PortCounter.incr());
+        delegateServer.launch(PortCounter.getPort());
     }
 
     /**
