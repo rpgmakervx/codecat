@@ -65,12 +65,10 @@ public class ImageHandler extends ChannelInboundHandlerAdapter{
         ByteBuf byteBuf = Unpooled.wrappedBuffer(contents, 0, contents.length);
         FullHttpResponse response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1,
                 status,byteBuf);
-        logger.info("response header ---------------");
         for (Header header:headers){
             response.headers().set(header.getName(),header.getValue());
             logger.info(header.getName()+"::"+header.getValue());
         }
-        logger.info("end header ---------------");
         ctx.channel().writeAndFlush(response);
         ctx.close();
     }

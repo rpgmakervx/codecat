@@ -9,7 +9,7 @@ import org.code4j.codecat.commons.util.XmlUtil;
 import org.code4j.codecat.monitor.dynamicproxy.factory.ProxyFactory;
 import org.code4j.codecat.monitor.listener.PortCounter;
 import org.code4j.codecat.monitor.load.JarLoader;
-import org.code4j.codecat.realserver.server.IRealServer;
+import org.code4j.codecat.commons.realserver.IRealServer;
 import org.code4j.codecat.realserver.server.RealServer;
 import org.code4j.codecat.tests.monitor.dyproxy.Handler;
 import org.code4j.codecat.tests.monitor.pojo.IUser;
@@ -184,11 +184,13 @@ public class TestDemo {
 
     @Test
     public void testSeperator(){
-//        String[] segement = "/".split(File.separator);
-//        System.out.println(segement[0]);
+        String[] segement = "/handler/index".split(File.separator);
+        System.out.println(segement[0]);
 
-        Map<String,String> map = new HashMap<>();
-        map.put("","xingtianyu");
-        System.out.println(map.get(""));
+//        Map<String,String> map = new HashMap<>();
+//        map.put("","xingtianyu");
+//        System.out.println(map.get(""));
+//        String plugin_name = "/dd/jar.jar";
+//        System.out.println(plugin_name.substring(0, plugin_name.lastIndexOf(Const.DOT)));
     }
 }

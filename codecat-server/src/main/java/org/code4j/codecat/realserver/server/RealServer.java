@@ -1,8 +1,4 @@
-package org.code4j.codecat.realserver.server;/**
- * Description : 
- * Created by YangZH on 16-6-14
- *  下午2:32
- */
+package org.code4j.codecat.realserver.server;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
@@ -15,9 +11,9 @@ import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpRequestDecoder;
 import io.netty.handler.codec.http.HttpResponseEncoder;
 import org.apache.log4j.Logger;
+import org.code4j.codecat.commons.realserver.IRealServer;
 import org.code4j.codecat.realserver.handler.RealServerChildHandler;
 import org.code4j.codecat.realserver.handler.http.BaseHttpServerHandler;
-
 
 /**
  * Description :
@@ -33,7 +29,7 @@ import org.code4j.codecat.realserver.handler.http.BaseHttpServerHandler;
  * 先增强功能再launch会被后面launch里设置参数部分覆盖。
  */
 
-public class RealServer implements IRealServer{
+public class RealServer implements IRealServer {
 
     private Logger logger = Logger.getLogger(RealServer.class);
     private EventLoopGroup bossGroup ;
@@ -73,6 +69,13 @@ public class RealServer implements IRealServer{
             workerGroup.shutdownGracefully();
             bossGroup.shutdownGracefully();
         }
+    }
+
+    @Override
+    public void close() {
+        future.channel().close();
+        workerGroup.shutdownGracefully();
+        bossGroup.shutdownGracefully();
     }
 
     public void initHandler(){

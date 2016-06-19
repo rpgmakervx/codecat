@@ -71,7 +71,7 @@ public class JarHelper {
      * @return
      */
     public static InputStream readConfig(String jarFilePath,String config_pattern){
-        Pattern pattern = Pattern.compile(Const.APPXML);
+        Pattern pattern = Pattern.compile(config_pattern);
         try {
             JarFile jarFile = new JarFile(jarFilePath);
             Enumeration<JarEntry> entrys = jarFile.entries();

@@ -1,4 +1,4 @@
-package org.code4j.codecat.realserver.server;/**
+package org.code4j.codecat.commons.realserver;/**
  * Description : 
  * Created by YangZH on 16-6-17
  *  上午2:00
@@ -20,4 +20,6 @@ public interface IRealServer {
     public abstract void initHandler();
     public abstract void addHandler(Class<? extends ChannelHandler> handler);
     public abstract void launch(int port);
+
+    public abstract void close();
 }

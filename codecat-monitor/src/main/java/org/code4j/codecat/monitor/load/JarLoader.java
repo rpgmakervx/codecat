@@ -7,10 +7,9 @@ package org.code4j.codecat.monitor.load;/**
 
 import org.code4j.codecat.api.service.BasicHttpHandler;
 import org.code4j.codecat.commons.constants.Const;
-import org.code4j.codecat.commons.util.XmlUtil;
-import org.code4j.codecat.monitor.listener.PortCounter;
 import org.code4j.codecat.commons.util.PathPortPair;
-import org.code4j.codecat.monitor.util.JarHelper;
+import org.code4j.codecat.monitor.listener.PortCounter;
+import org.code4j.codecat.monitor.proxy.invoker.ShellInvoker;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -29,17 +28,22 @@ public class JarLoader {
 
     public String pluginPath;
 
+    public String filename;
+
     public boolean xmlLoaded = false;
 
     public JarLoader(String app_path,String plugin_name) {
+        this.filename = plugin_name.substring(0, plugin_name.lastIndexOf(Const.DOT));
         this.pluginPath = app_path+File.separator+plugin_name;
     }
 
     public JarLoader(String pluginPath){
+        String[] segement = pluginPath.split(File.separator);
+        this.filename = segement[segement.length-1].substring(0, segement[segement.length - 1].lastIndexOf(Const.DOT));
         this.pluginPath = pluginPath;
     }
 
-    public BasicHttpHandler loadBasicService(String classname){
+    public BasicHttpHandler loadJar(String classname){
         try {
             // 创建一个URL数组
             URL[] urls = new URL[]{new URL("file:"+this.pluginPath)};
@@ -50,14 +54,15 @@ public class JarLoader {
             Class<? extends BasicHttpHandler> clazz =
                     (Class<? extends BasicHttpHandler>) classLoader.loadClass(classname);
             if (!xmlLoaded){
-                XmlUtil util = new XmlUtil(JarHelper.readConfig(this.pluginPath,Const.APPXML));
-                String path = util.getTextByTagName(Const.ROOT_PATH);
-                if (PathPortPair.hasPath(path)){
+//                XmlUtil util = new XmlUtil(JarHelper.readConfig(this.pluginPath,Const.APPXML));
+//                String path = util.getTextByTagName(Const.ROOT_PATH);
+                if (PathPortPair.hasPath(this.filename)){
                     return null;
                 }
-                PathPortPair.storePair(path, PortCounter.incr());
-                System.out.println("load path --> "+path);
+                PathPortPair.storePair(this.filename, PortCounter.incr());
+                System.out.println("load path --> "+this.filename);
                 xmlLoaded = true;
+                PathPortPair.showPairs();
             }
             return clazz.newInstance();
         } catch (Exception e) {
@@ -65,7 +70,43 @@ public class JarLoader {
             return null;
         }
     }
+    @Deprecated
+    public void recordTerminatedPair(){
+//        XmlUtil util = new XmlUtil(JarHelper.readConfig(this.pluginPath, Const.APPXML));
+//        String path = util.getTextByTagName(Const.ROOT_PATH);
+        PathPortPair.terminatedQueue(pluginPath,PathPortPair.getPort(this.filename));
+        PathPortPair.showTerminatedQueue();
+    }
 
+
+    public void unloadJar(){
+//        ShellInvoker.execute(ShellInvoker.KILL_SERVER,
+//                String.valueOf(PathPortPair.getPort(this.filename)));
+        PathPortPair.showPairs();
+        PathPortPair.getServer(this.filename).close();
+        PathPortPair.removePair(this.filename);
+//        Set<Map.Entry<String,Integer>> entrys =
+//                PathPortPair.getTerminatedPair();
+//        for (Map.Entry<String,Integer> entry : entrys){
+//            System.out.println(entry.getKey()+" : "+entry.getValue());
+//            if (entry.getKey().equals(this.filename)){
+//                ShellInvoker.execute(ShellInvoker.KILL_SERVER,
+//                        String.valueOf(entry.getValue()));
+//                PathPortPair.removePair(PathPortPair.getPath(entry.getValue()));
+//            }
+//        }
+    }
+
+    public void uninstallJar(){
+//        XmlUtil util = new XmlUtil(JarHelper.readConfig(this.pluginPath,Const.APPXML));
+//        String path = util.getTextByTagName(Const.ROOT_PATH);
+        if (PathPortPair.hasPath(this.filename)){
+            ShellInvoker.execute(ShellInvoker.KILL_SERVER,
+                    String.valueOf(PathPortPair.getPort(this.filename)));
+            PathPortPair.removePair(this.filename);
+        }
+    }
+    
     // 读取一个文件的内容
     private byte[] getBytes(String filename)
             throws IOException{

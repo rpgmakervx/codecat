@@ -14,8 +14,10 @@ import java.io.IOException;
 
 public class ShellInvoker {
     public static final String STARTUP_SERVER = System.getProperty("user.dir")+"/bootstrap.sh";
+    public static final String KILL_SERVER = System.getProperty("user.dir")+"/kill.sh";
 
     public static void execute(String cmd,String param){
+        System.out.println("command --> "+cmd+" "+param);
         try {
             Runtime.getRuntime().exec(cmd+" "+param);
         } catch (IOException e) {

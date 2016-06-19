@@ -6,7 +6,7 @@ package org.code4j.codecat.monitor.dynamicproxy.factory;/**
 
 import org.code4j.codecat.monitor.dynamicproxy.handler.RealServerProxyHandler;
 import org.code4j.codecat.monitor.load.JarLoader;
-import org.code4j.codecat.realserver.server.IRealServer;
+import org.code4j.codecat.commons.realserver.IRealServer;
 
 import java.lang.reflect.Proxy;
 

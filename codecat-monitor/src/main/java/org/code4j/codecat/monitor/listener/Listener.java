@@ -3,12 +3,13 @@ package org.code4j.codecat.monitor.listener;
 import net.contentobjects.jnotify.JNotifyAdapter;
 import org.apache.log4j.Logger;
 import org.code4j.codecat.commons.constants.Const;
-import org.code4j.codecat.monitor.util.JarHelper;
+import org.code4j.codecat.commons.util.PathPortPair;
 import org.code4j.codecat.commons.util.PropertyHelper;
 import org.code4j.codecat.monitor.dynamicproxy.factory.ProxyFactory;
 import org.code4j.codecat.monitor.load.JarLoader;
 import org.code4j.codecat.monitor.service.ReadConfigService;
-import org.code4j.codecat.realserver.server.IRealServer;
+import org.code4j.codecat.monitor.util.JarHelper;
+import org.code4j.codecat.commons.realserver.IRealServer;
 import org.code4j.codecat.realserver.server.RealServer;
 
 import java.io.File;
@@ -40,6 +41,10 @@ public class Listener extends JNotifyAdapter {
     @Override
     public void fileModified(int i, String s, String s1) {
         logger.info("修改了一个文件" + s + " | " + s1 + " | " + s1);
+        //方案1，直接在发现修改jar的时候移除
+//        handleUninstall(s, s1);
+        //方案2，先记录要删除的jar，再删除完成被监听到后，从codecat中移除
+//        new JarLoader(s,s1).recordTerminatedPair();
     }
 
     @Override
@@ -50,6 +55,19 @@ public class Listener extends JNotifyAdapter {
     @Override
     public void fileDeleted(int wd, String rootPath, String name) {
         logger.info("删除了一个文件 " + rootPath + name);
+        //方案2，先记录要删除的jar，再删除完成被监听到后，从codecat中移除
+        handleUninstall(rootPath,name);
+    }
+
+    private void handleUninstall(String path,String filename){
+        File file = new File(path+File.separator+filename);
+        System.out.println("is a file? "+file.getAbsolutePath());
+        Matcher matcher = pattern.matcher(file.getName());
+        System.out.println("is a jar file? "+matcher.matches());
+        PathPortPair.showPairs();
+        if (matcher.matches()){
+            new JarLoader(path,filename).unloadJar();
+        }
     }
 
     private void handleNewFile(String path,String filename){
@@ -136,6 +154,8 @@ public class Listener extends JNotifyAdapter {
                 ,new JarLoader(app_path,plugin_name),pluginName);
         delegateServer.initHandler();
         delegateServer.setup();
+        PathPortPair.storeServer(plugin_name, delegateServer);
+        PathPortPair.showServer();
         delegateServer.launch(PortCounter.getPort());
     }
 

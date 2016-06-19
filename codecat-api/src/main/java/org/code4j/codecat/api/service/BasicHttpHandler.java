@@ -11,7 +11,6 @@ import org.code4j.codecat.commons.constants.Const;
 import org.code4j.codecat.commons.util.PathPortPair;
 
 import java.io.File;
-import java.net.SocketAddress;
 
 /**
  * Description :
@@ -35,11 +34,9 @@ public abstract class BasicHttpHandler extends ChannelInboundHandlerAdapter{
     @Override
     public final void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         FullHttpRequest request = (FullHttpRequest) msg;
-        SocketAddress insocket = ctx.channel().localAddress();
-        System.out.println("server IP ： "+insocket.toString());
         String uri = getURI(request.uri());
-        System.out.println("visit uri ： "+uri);
-        if (!PathPortPair.hasPath(getURI(request.uri()))){
+        System.out.println("threadName --> "+Thread.currentThread().getName());
+        if (!PathPortPair.hasPath(getRoot(request.uri()))){
             responseTo(ctx, Const.NOTFOUNG, HttpResponseStatus.NOT_FOUND);
         }
         if (this.getClass().isAnnotationPresent(Path.class)){
@@ -88,7 +85,11 @@ public abstract class BasicHttpHandler extends ChannelInboundHandlerAdapter{
         return url.substring(root_path.lastIndexOf(root_path) + root_path.length()+1);
     }
 
+
     private String getRoot(String url){
+        if (url == null||url.equals(File.separator)||url.isEmpty()){
+            return "/";
+        }
         String[] path_segement = url.split(File.separator);
         return path_segement[1];
     }
