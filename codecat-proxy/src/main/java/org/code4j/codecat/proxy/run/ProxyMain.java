@@ -1,12 +1,12 @@
-package org.code4j.codecat.monitor.proxy.run;/**
+package org.code4j.codecat.proxy.run;/**
  * Description : 
  * Created by YangZH on 16-5-25
  *  下午2:28
  */
 
 
-import org.code4j.codecat.monitor.listener.JarWatcher;
-import org.code4j.codecat.monitor.proxy.server.MonitorServer;
+import org.code4j.codecat.listener.JarWatcher;
+import org.code4j.codecat.proxy.server.ProxyServer;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -17,7 +17,7 @@ import java.util.concurrent.Executors;
  * 下午2:28
  */
 
-public class MonitorMain {
+public class ProxyMain {
 
     public static void main(String[] args) {
         ExecutorService pool = Executors.newCachedThreadPool();
@@ -32,7 +32,7 @@ public class MonitorMain {
         pool.submit(new Runnable() {
             @Override
             public void run() {
-                new MonitorServer().startup(port);
+                new ProxyServer().startup(port);
             }
         });
     }

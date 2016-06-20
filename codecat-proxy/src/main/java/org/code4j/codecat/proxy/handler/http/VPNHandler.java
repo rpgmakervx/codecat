@@ -1,4 +1,4 @@
-package org.code4j.codecat.monitor.proxy.handler.http;/**
+package org.code4j.codecat.proxy.handler.http;/**
  * Description : PrivateMessageHandler
  * Created by YangZH on 16-5-27
  *  下午4:43

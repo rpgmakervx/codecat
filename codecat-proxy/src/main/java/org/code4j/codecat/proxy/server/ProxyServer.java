@@ -1,4 +1,4 @@
-package org.code4j.codecat.monitor.proxy.server;/**
+package org.code4j.codecat.proxy.server;/**
  * Description : realserver
  * Created by YangZH on 16-5-25
  *  上午8:14
@@ -14,7 +14,7 @@ import org.apache.log4j.Logger;
 import org.code4j.codecat.commons.invoker.ShellInvoker;
 import org.code4j.codecat.commons.util.JedisUtil;
 import org.code4j.codecat.commons.util.PortCounter;
-import org.code4j.codecat.monitor.proxy.handler.MonitorServerChildHandler;
+import org.code4j.codecat.proxy.handler.MonitorServerChildHandler;
 
 import java.io.File;
 
@@ -24,9 +24,9 @@ import java.io.File;
  * 上午8:14
  */
 
-public class MonitorServer {
+public class ProxyServer {
 
-    private Logger logger  = Logger.getLogger(MonitorServer.class);
+    private Logger logger  = Logger.getLogger(ProxyServer.class);
 
     /**
      * 这个启动方法是为了封装成jar包后提供给用户来方便他们调用时设置jproxy端口的

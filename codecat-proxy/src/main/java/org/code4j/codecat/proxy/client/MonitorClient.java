@@ -1,4 +1,4 @@
-package org.code4j.codecat.monitor.proxy.client;/**
+package org.code4j.codecat.proxy.client;/**
  * Description : 
  * Created by YangZH on 16-5-25
  *  下午10:47

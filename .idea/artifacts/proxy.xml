@@ -1,0 +1,13 @@
+<component name="ArtifactManager">
+  <artifact name="proxy">
+    <output-path>$PROJECT_DIR$/out/artifacts/proxy</output-path>
+    <root id="root">
+      <element id="archive" name="proxy.jar">
+        <element id="module-output" name="codecat-proxy" />
+        <element id="module-output" name="codecat-api" />
+        <element id="module-output" name="codecat-commons" />
+        <element id="module-output" name="codecat-server" />
+      </element>
+    </root>
+  </artifact>
+</component>

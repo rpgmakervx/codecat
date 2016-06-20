@@ -1,4 +1,4 @@
-package org.code4j.codecat.monitor.listener;
+package org.code4j.codecat.listener;
 
 import net.contentobjects.jnotify.JNotifyAdapter;
 import org.apache.log4j.Logger;
