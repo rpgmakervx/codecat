@@ -7,8 +7,7 @@ import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import org.apache.log4j.Logger;
 import org.code4j.codecat.api.response.factory.HttpResponseFactory;
-import org.code4j.codecat.commons.constants.Const;
-import org.code4j.codecat.commons.util.PathPortPair;
+import org.code4j.codecat.commons.util.JedisUtil;
 
 import java.io.File;
 
@@ -35,17 +34,27 @@ public abstract class BasicHttpHandler extends ChannelInboundHandlerAdapter{
     public final void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         FullHttpRequest request = (FullHttpRequest) msg;
         String uri = getURI(request.uri());
-        System.out.println("threadName --> "+Thread.currentThread().getName());
-        if (!PathPortPair.hasPath(getRoot(request.uri()))){
-            responseTo(ctx, Const.NOTFOUNG, HttpResponseStatus.NOT_FOUND);
+        logger.info("origin uri--> "+request.uri());
+        logger.info("uri--> "+uri);
+        System.out.println("threadName --> " + Thread.currentThread().getName());
+        if (request.uri().equals(File.separator)){
+            String result = String.valueOf(service(request.uri()));
+            responseTo(ctx, result, HttpResponseStatus.OK);
+        }
+        String root = getRoot(request.uri());
+        logger.info("hash key? "+JedisUtil.hasKey(root));
+        if (!JedisUtil.hasKey(root)){
+            responseTo(ctx, "no suitable jar!!", HttpResponseStatus.NOT_FOUND);
         }
         if (this.getClass().isAnnotationPresent(Path.class)){
             Path path = this.getClass().getAnnotation(Path.class);
+            System.out.println();
             if (uri.equals(path.value())){
                 String result = String.valueOf(service(request.uri()));
                 responseTo(ctx, result, HttpResponseStatus.OK);
             }else if (ctx.pipeline().last() == this){
-                responseTo(ctx, Const.NOTFOUNG, HttpResponseStatus.NOT_FOUND);
+                logger.info("uri//没找到合适的所以404");
+                responseTo(ctx, "no suitable app!!", HttpResponseStatus.NOT_FOUND);
             }else{
                 ctx.fireChannelRead(msg);
             }
@@ -78,7 +87,7 @@ public abstract class BasicHttpHandler extends ChannelInboundHandlerAdapter{
 
     private String getURI(String url){
         if (url.equals(File.separator)){
-            return "";
+            return File.separator;
         }
         String[] path_segement = url.split(File.separator);
         String root_path = path_segement[1];

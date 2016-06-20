@@ -11,10 +11,10 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import org.apache.log4j.Logger;
-import org.code4j.codecat.commons.util.PathPortPair;
-import org.code4j.codecat.monitor.listener.PortCounter;
+import org.code4j.codecat.commons.invoker.ShellInvoker;
+import org.code4j.codecat.commons.util.JedisUtil;
+import org.code4j.codecat.commons.util.PortCounter;
 import org.code4j.codecat.monitor.proxy.handler.MonitorServerChildHandler;
-import org.code4j.codecat.monitor.proxy.invoker.ShellInvoker;
 
 import java.io.File;
 
@@ -48,7 +48,8 @@ public class MonitorServer {
                     .option(ChannelOption.SO_BACKLOG, 256).childOption(ChannelOption.SO_KEEPALIVE, true);
             f = b.bind(port).sync();
             logger.info("proxy server has started");
-            PathPortPair.storePair(File.separator,PortCounter.getPort());
+            JedisUtil.set(File.separator,String.valueOf(PortCounter.getPort()));
+//            PathPortPair.storePair(File.separator,PortCounter.getPort());
             ShellInvoker.execute(ShellInvoker.STARTUP_SERVER
                     ,String.valueOf(PortCounter.getPort()));
             logger.info("real server is drived by proxy server");

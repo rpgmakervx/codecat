@@ -4,12 +4,14 @@ package org.code4j.codecat.tests.monitor; /**
  *  上午1:06
  */
 
+import net.contentobjects.jnotify.JNotify;
 import org.code4j.codecat.commons.constants.Const;
-import org.code4j.codecat.commons.util.XmlUtil;
-import org.code4j.codecat.monitor.dynamicproxy.factory.ProxyFactory;
-import org.code4j.codecat.monitor.listener.PortCounter;
-import org.code4j.codecat.monitor.load.JarLoader;
 import org.code4j.codecat.commons.realserver.IRealServer;
+import org.code4j.codecat.commons.util.PortCounter;
+import org.code4j.codecat.commons.util.XmlUtil;
+import org.code4j.codecat.monitor.listener.Listener;
+import org.code4j.codecat.realserver.dynamicproxy.factory.ProxyFactory;
+import org.code4j.codecat.realserver.load.JarLoader;
 import org.code4j.codecat.realserver.server.RealServer;
 import org.code4j.codecat.tests.monitor.dyproxy.Handler;
 import org.code4j.codecat.tests.monitor.pojo.IUser;
@@ -22,7 +24,9 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Proxy;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.*;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.Properties;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.regex.Matcher;
@@ -192,5 +196,19 @@ public class TestDemo {
 //        System.out.println(map.get(""));
 //        String plugin_name = "/dd/jar.jar";
 //        System.out.println(plugin_name.substring(0, plugin_name.lastIndexOf(Const.DOT)));
+    }
+
+
+
+
+    @Test
+    public synchronized void testNotify() throws Exception {
+        int mask = JNotify.FILE_CREATED |
+                JNotify.FILE_DELETED |
+                JNotify.FILE_MODIFIED |
+                JNotify.FILE_RENAMED;
+        boolean watchSubtree = true;
+        int watchID = JNotify.addWatch("/home/code4j/osproject/codecat/apps", mask, watchSubtree, new Listener());
+        wait();
     }
 }

@@ -27,8 +27,15 @@ public class TestDemo {
     @Test
     public void testSeperator(){
 //        System.out.println(getValue());
-        String path = "lll/root";
-        System.out.println(path.split(File.separator)[1]);
+//        String path = "lll/root";
+//        System.out.println(path.split(File.separator)[1]);
+        String url = "/";
+        if (url.equals(File.separator)){
+            System.out.println();
+        }
+        String[] path_segement = url.split(File.separator);
+        String root_path = path_segement[1];
+        System.out.println(url.substring(root_path.lastIndexOf(root_path) + root_path.length()+1));;
     }
 
     public Integer getValue(){

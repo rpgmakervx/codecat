@@ -16,11 +16,10 @@ import java.io.FileNotFoundException;
  * Created by YangZH on 16-6-15
  * 下午1:53
  */
-
+@Deprecated
 public class ReadConfigService {
 
     private XmlUtil util;
-
     public ReadConfigService(String configPath){
         util = new XmlUtil(configPath);
     }

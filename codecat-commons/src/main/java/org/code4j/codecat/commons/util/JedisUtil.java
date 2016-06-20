@@ -22,11 +22,29 @@ public class JedisUtil {
         System.out.println("Server is running: "+jedisClient.ping());
     }
     public static String get(String key){
-        return jedisClient.get(key);
+        return jedisClient.hget("codecat",key);
     }
 
     public static void set(String key,String value){
-        jedisClient.set(key,value);
+        jedisClient.hset("codecat",key,value);
+        jedisClient.set(key, value);
+    }
+
+    public static void remove(String key){
+        jedisClient.hdel("codecat",key);
+        jedisClient.del(key);
+    }
+
+    public static void showPairs(){
+        System.out.println("------pairs--------");
+        for (String key:jedisClient.hkeys("codecat")){
+            System.out.println("key -->"+key+",value -->"+get(key));
+        }
+        System.out.println("------pairs-end-------");
+    }
+
+    public static boolean hasKey(String key){
+        return jedisClient.hexists("codecat",key);
     }
 
     public static void setList(String listname,List<String> list){

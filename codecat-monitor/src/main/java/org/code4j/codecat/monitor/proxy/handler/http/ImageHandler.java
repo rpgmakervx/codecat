@@ -12,8 +12,8 @@ import io.netty.handler.codec.http.*;
 import org.apache.http.Header;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.log4j.Logger;
-import org.code4j.codecat.commons.util.PathPortPair;
-import org.code4j.codecat.monitor.listener.PortCounter;
+import org.code4j.codecat.commons.util.JedisUtil;
+import org.code4j.codecat.commons.util.PortCounter;
 import org.code4j.codecat.monitor.proxy.client.MonitorClient;
 import org.code4j.codecat.monitor.proxy.util.WebUtil;
 
@@ -94,13 +94,14 @@ public class ImageHandler extends ChannelInboundHandlerAdapter{
         public void run() {
             try {
                 HttpRequest request = (HttpRequest) msg;
-                if (!PathPortPair.hasPath(request.uri()) && !File.separator.equals(request.uri())){
+                String root = getRoot(request.uri());
+                if (!JedisUtil.hasKey(root) && !File.separator.equals(request.uri())){
                     String notfound = "<h1 align='center'>404 NOT FOUND!</h1>";
                     response(ctx,notfound.getBytes(),HttpResponseStatus.NOT_FOUND);
                     return ;
                 }
                 System.out.println("uri -->"+request.uri()+"|");
-                int port = PathPortPair.getPort(request.uri());
+                int port = Integer.valueOf(JedisUtil.get(root));
                 address = new InetSocketAddress(LOCALHOST, port);
                 if (request.method().equals(HttpMethod.GET)){
                     Pattern pattern = Pattern.compile(".+\\.("+ WebUtil.IMAGE+").*");
@@ -127,4 +128,21 @@ public class ImageHandler extends ChannelInboundHandlerAdapter{
         }
     }
 
+    private String getURI(String url){
+        if (url.equals(File.separator)){
+            return File.separator;
+        }
+        String[] path_segement = url.split(File.separator);
+        String root_path = path_segement[1];
+        return url.substring(root_path.lastIndexOf(root_path) + root_path.length()+1);
+    }
+
+
+    private String getRoot(String url){
+        if (url == null||url.equals(File.separator)||url.isEmpty()){
+            return "/";
+        }
+        String[] path_segement = url.split(File.separator);
+        return path_segement[1];
+    }
 }
