@@ -4,6 +4,7 @@
 ##快速使用
 - **cd /home/xxx/codecat/bin** 查看项目的`bin`目录
 - **sudo chmod +x startup.sh** 修改启动脚本，获得执行权限
+- **redis-server** 开启redis server , 并且可以启动一个客户端实时查看键值对情况， **hgetall codecat** 可以查看所有的port path的映射关系
 - **./startup 8080** 开启codecat服务，注意这个操作会试图关闭你计算机的防火墙（测试的时候用），后面的参数是用户可以指定的codecat的服务端口。
 - **打开浏览器访问localhost:8080(或者你指定的端口)**  访问服务根目录
 - **cp codecat-api.jar /home/xxx/your project** 将bin下的 codecat-api.jar引入你的项目，注意项目在打包的时候命好名，因为这个名字将是你这个项目的根目录名字。
@@ -24,8 +25,8 @@ public class TimerHandler extends BasicHttpHandler {
                                                         
 
 ##对比tomcat
-tomcat的热部署 是无法再被卸载的，因此**codecat**引入了`热卸载`的概念，codecat内部使用一个代理，启动的时候默认代理一个server，每当用户向`codecat/apps` 中放入一个新的jar包后，**codecat**会读取jar包内相应的类，启动一个新的端口并注册到代理，启动之前把新的类加载到新的server
-以jar包的名字作为项目根目录，从而达到一个jar包对应一个realserver端口的效果。用户的直接感受就是访问的端口没有变过。当用户卸载（删除）jar时，**codecat**会根据所删除jar包名字，将映射的端口关闭，从而达到用户无法访问该jar包的功能的效果，来达到卸载的目的。
+tomcat的热部署 是无法再被卸载的，因此 **codecat** 引入了`热卸载`的概念，codecat内部使用一个代理，启动的时候默认代理一个server，每当用户向`codecat/apps` 中放入一个新的jar包后，**codecat**会读取jar包内相应的类，启动一个新的端口并注册到代理，启动之前把新的类加载到新的server
+以jar包的名字作为项目根目录，从而达到一个jar包对应一个realserver端口的效果。用户的直接感受就是访问的端口没有变过。当用户卸载（删除）jar时， **codecat** 会根据所删除jar包名字，将映射的端口关闭，从而达到用户无法访问该jar包的功能的效果，来达到卸载的目的。
 
 ##尚存的缺陷BUG
 - **1.**首次上传jar的时候可能读取不到jar包内容。
