@@ -16,8 +16,8 @@ import org.code4j.codecat.commons.util.JedisUtil;
 public class RequestDataDao {
 
     public void save(String url,String param,String data){
-        String key = EncryptUtil.hash(url+param,EncryptUtil.SHA1);
-        JedisUtil.set(key,data);
+        String key = EncryptUtil.hash(url + param, EncryptUtil.SHA1);
+        JedisUtil.set(key, data);
         System.out.println("保存完，key="+key+" , value="+data);
     }
 

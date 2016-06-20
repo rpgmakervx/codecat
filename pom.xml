@@ -9,11 +9,12 @@
     <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
     <modules>
-        <module>codecat-monitor</module>
         <module>codecat-server</module>
         <module>codecat-commons</module>
         <module>codecat-api</module>
         <module>codecat-tests</module>
+        <module>codecat-proxy</module>
+        <module>codecat-http</module>
     </modules>
 
     <dependencies>

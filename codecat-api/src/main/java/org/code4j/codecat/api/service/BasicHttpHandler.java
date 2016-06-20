@@ -7,6 +7,7 @@ import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import org.apache.log4j.Logger;
 import org.code4j.codecat.api.response.factory.HttpResponseFactory;
+import org.code4j.codecat.commons.constants.Const;
 import org.code4j.codecat.commons.util.JedisUtil;
 
 import java.io.File;
@@ -34,9 +35,6 @@ public abstract class BasicHttpHandler extends ChannelInboundHandlerAdapter{
     public final void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         FullHttpRequest request = (FullHttpRequest) msg;
         String uri = getURI(request.uri());
-        logger.info("origin uri--> "+request.uri());
-        logger.info("uri--> "+uri);
-        System.out.println("threadName --> " + Thread.currentThread().getName());
         if (request.uri().equals(File.separator)){
             String result = String.valueOf(service(request.uri()));
             responseTo(ctx, result, HttpResponseStatus.OK);
@@ -44,7 +42,7 @@ public abstract class BasicHttpHandler extends ChannelInboundHandlerAdapter{
         String root = getRoot(request.uri());
         logger.info("hash key? "+JedisUtil.hasKey(root));
         if (!JedisUtil.hasKey(root)){
-            responseTo(ctx, "no suitable jar!!", HttpResponseStatus.NOT_FOUND);
+            responseTo(ctx, Const.NOTFOUNG+"<p align='center'>no suitable jar!!</p>", HttpResponseStatus.NOT_FOUND);
         }
         if (this.getClass().isAnnotationPresent(Path.class)){
             Path path = this.getClass().getAnnotation(Path.class);
@@ -53,8 +51,7 @@ public abstract class BasicHttpHandler extends ChannelInboundHandlerAdapter{
                 String result = String.valueOf(service(request.uri()));
                 responseTo(ctx, result, HttpResponseStatus.OK);
             }else if (ctx.pipeline().last() == this){
-                logger.info("uri//没找到合适的所以404");
-                responseTo(ctx, "no suitable app!!", HttpResponseStatus.NOT_FOUND);
+                responseTo(ctx, Const.NOTFOUNG+"<p align='center'>no suitable app!!</p>", HttpResponseStatus.NOT_FOUND);
             }else{
                 ctx.fireChannelRead(msg);
             }

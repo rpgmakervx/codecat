@@ -23,19 +23,12 @@ class ServerLauncher {
 
     static Logger logger = Logger.getLogger(ServerLauncher.class);
     public static void main(String[] args) {
-        System.out.println("主函数参数长度： "+args.length);
         if (args.length == 1){
-            System.out.println("主函数收到一个参数");
             new RealServer().startup(Integer.valueOf(args[0]));
         }else{
-            System.out.println("主函数收到多个参数 "+args.length);
             ProxyFactory factory = new ProxyFactory();
             RealServer server = new RealServer();
             List<String> classnames = JarHelper.getClassFileName(args[1]);
-            System.out.println("class numbers --> "+classnames.size());
-            for (String name:classnames){
-                logger.info("clazzname is "+name);
-            }
             IRealServer delegateServer = factory.getProxy(server
                     , new JarLoader(args[1]), classnames);
             delegateServer.initHandler();

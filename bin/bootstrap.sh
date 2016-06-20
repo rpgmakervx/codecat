@@ -11,7 +11,7 @@ for file in ${folder}/*; do
     temp_file=`basename $file`  
     all_jar="${all_jar}:${folder}/${temp_file}"
 done
-main_class="org.code4j.codecat.realserver.run.ServerLauncher"
+main_class="ServerLauncher"
 cd "bin"
 if [ "$1" = "" ];then
 	echo "no param"

@@ -1,5 +1,5 @@
-INFO 31 [2016-06-15 19:30:41,908] org.code4j.codecat.realserver.server.RealServer - launching real server...
-INFO 41 [2016-06-15 19:30:42,087] org.code4j.codecat.realserver.server.RealServer - server started completely
-INFO 39 [2016-06-15 19:31:14,313] org.code4j.codecat.realserver.handler.http.BaseHttpServerHandler - uri:/
-INFO 41 [2016-06-15 19:31:14,314] org.code4j.codecat.realserver.handler.http.BaseHttpServerHandler - 
-INFO 51 [2016-06-15 19:31:14,330] org.code4j.codecat.realserver.handler.http.BaseHttpServerHandler - BaseHttpServerHandler.channelReadComplete
+INFO 31 [2016-06-15 19:30:41,908] RealServer - launching real server...
+INFO 41 [2016-06-15 19:30:42,087] RealServer - server started completely
+INFO 39 [2016-06-15 19:31:14,313] BaseHttpServerHandler - uri:/
+INFO 41 [2016-06-15 19:31:14,314] BaseHttpServerHandler -
+INFO 51 [2016-06-15 19:31:14,330] BaseHttpServerHandler - BaseHttpServerHandler.channelReadComplete

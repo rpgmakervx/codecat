@@ -24,7 +24,7 @@
         <processorPath useClasspath="true" />
         <module name="codecat-api" />
         <module name="codecat-commons" />
-        <module name="codecat-monitor" />
+        <module name="codecat-http" />
         <module name="codecat-proxy" />
         <module name="codecat-server" />
         <module name="codecat-test" />

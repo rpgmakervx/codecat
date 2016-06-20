@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <app>
-    <function-class>org.code4j.codecat.commons.pojo.Manifest</function-class>
+    <function-class>Manifest</function-class>
 </app>

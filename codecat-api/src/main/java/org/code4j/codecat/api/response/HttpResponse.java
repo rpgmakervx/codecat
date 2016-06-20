@@ -4,9 +4,10 @@ package org.code4j.codecat.api.response;/**
  *  上午1:08
  */
 
+import org.code4j.codecat.api.http.Method;
 import io.netty.handler.codec.http.DefaultFullHttpResponse;
 import io.netty.handler.codec.http.HttpHeaderNames;
-import org.code4j.codecat.api.http.Method;
+import io.netty.handler.codec.http.HttpResponseStatus;
 
 /**
  * Description :
@@ -28,7 +29,7 @@ public class HttpResponse {
         response.headers().set(HttpHeaderNames.CONTENT_TYPE,contentType);
     }
 
-    public void sendError(int statusCode,String msg){
-//        response.setStatus(new HttpResponseStatus(statusCode,));
+    public void sendError(HttpResponseStatus status,String msg){
+        response.setStatus(status);
     }
 }
