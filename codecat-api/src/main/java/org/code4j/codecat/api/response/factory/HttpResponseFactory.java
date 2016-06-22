@@ -5,17 +5,9 @@ package org.code4j.codecat.api.response.factory;/**
  */
 
 import io.netty.buffer.Unpooled;
-import io.netty.handler.codec.http.DefaultFullHttpResponse;
-import io.netty.handler.codec.http.FullHttpResponse;
-import io.netty.handler.codec.http.HttpHeaderValues;
-import io.netty.handler.codec.http.HttpResponseStatus;
+import io.netty.handler.codec.http.*;
 
 import java.util.Date;
-
-import static io.netty.handler.codec.http.HttpHeaderNames.*;
-import static io.netty.handler.codec.http.HttpHeaderValues.CHUNKED;
-import static io.netty.handler.codec.http.HttpResponseStatus.OK;
-import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
 
 /**
  * Description :
@@ -25,7 +17,7 @@ import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
 
 public class HttpResponseFactory {
 
-    public static FullHttpResponse getResponse(String content,HttpResponseStatus status){
+    public static FullHttpResponse getFullResponse(String content, HttpResponseStatus status){
         FullHttpResponse response = null;
         try {
             response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1,

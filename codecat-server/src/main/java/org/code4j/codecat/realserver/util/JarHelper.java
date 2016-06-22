@@ -4,7 +4,7 @@ package org.code4j.codecat.realserver.util;/**
  *  下午9:00
  */
 
-import org.code4j.codecat.api.service.BasicHttpHandler;
+import org.code4j.codecat.api.container.HttpContainer;
 import org.code4j.codecat.commons.constants.Const;
 
 import java.io.File;
@@ -52,8 +52,8 @@ public class JarHelper {
                     System.out.println("classname = "+filename);
                     Class clazz = classLoader.loadClass(filename);
                     //获得子类
-                    boolean isSubClass = BasicHttpHandler.class.isAssignableFrom(clazz)
-                                        &&BasicHttpHandler.class!=clazz;
+                    boolean isSubClass = HttpContainer.class.isAssignableFrom(clazz)
+                                        &&HttpContainer.class!=clazz;
                     if (isSubClass){
                         classnames.add(filename);
                     }

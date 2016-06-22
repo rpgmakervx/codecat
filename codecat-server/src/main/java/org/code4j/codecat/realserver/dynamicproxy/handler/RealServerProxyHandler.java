@@ -5,7 +5,7 @@ package org.code4j.codecat.realserver.dynamicproxy.handler;/**
  */
 
 import org.apache.log4j.Logger;
-import org.code4j.codecat.api.service.BasicHttpHandler;
+import org.code4j.codecat.api.container.HttpContainer;
 import org.code4j.codecat.commons.constants.Const;
 import org.code4j.codecat.commons.realserver.IRealServer;
 import org.code4j.codecat.realserver.load.JarLoader;
@@ -45,7 +45,7 @@ public class RealServerProxyHandler implements InvocationHandler {
         Object result = null;
         if (method.getName().equals(Const.DELEGATEMATHOD_SETUP)){
             for (String pluginName:this.pluginNames){
-                BasicHttpHandler plugin = loader.loadJar(pluginName);
+                HttpContainer plugin = loader.loadJar(pluginName);
                 logger.info("BasicHttpHandler plugin --> " + plugin);
                 delegatedServer.addHandler(plugin.getClass());
                 logger.info("invoke loadBasicService : "+pluginName);

@@ -7,8 +7,8 @@ package org.code4j.codecat.realserver.handler.http;/**
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import org.code4j.codecat.api.response.factory.HttpResponseFactory;
-import org.code4j.codecat.api.service.BasicHttpHandler;
-import org.code4j.codecat.api.service.Path;
+import org.code4j.codecat.api.container.HttpContainer;
+import org.code4j.codecat.api.container.Path;
 
 /**
  * Description :
@@ -16,7 +16,7 @@ import org.code4j.codecat.api.service.Path;
  * 下午3:34
  */
 @Path("/")
-public class BaseHttpServerHandler extends BasicHttpHandler {
+public class BaseHttpServerHandler extends HttpContainer {
 
     @Override
     public Object service(Object msg) {
@@ -25,7 +25,7 @@ public class BaseHttpServerHandler extends BasicHttpHandler {
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        ctx.writeAndFlush(HttpResponseFactory.getResponse(
+        ctx.writeAndFlush(HttpResponseFactory.getFullResponse(
                 cause.getMessage(), HttpResponseStatus.INTERNAL_SERVER_ERROR));
 
         ctx.close();

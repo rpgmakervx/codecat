@@ -103,7 +103,7 @@ public class PostRequestHandler extends ChannelInboundHandlerAdapter {
                 String root = getRoot(request.uri());
                 if (!JedisUtil.hasKey(root) && !File.separator.equals(request.uri())){
                     String notfound = "<h1 align='center'>404 NOT FOUND!</h1>";
-                    response(ctx,notfound.getBytes(),HttpResponseStatus.NOT_FOUND);
+                    response(ctx,notfound.getBytes("UTF-8"),HttpResponseStatus.NOT_FOUND);
                     return ;
                 }
                 int port = Integer.valueOf(JedisUtil.get(root));

@@ -1,4 +1,4 @@
-package org.code4j.codecat.api.service;
+package org.code4j.codecat.api.container;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
@@ -21,9 +21,9 @@ import java.io.File;
  * 转而用codecat的api使用服务更加“简单” ( <— <— )| 但愿我能封装的好点
  */
 
-public abstract class BasicHttpHandler extends ChannelInboundHandlerAdapter{
+public abstract class HttpContainer extends ChannelInboundHandlerAdapter{
 
-    private Logger logger = Logger.getLogger(BasicHttpHandler.class);
+    private Logger logger = Logger.getLogger(HttpContainer.class);
 
     /**
      * 提供给用户使用的业务方法
@@ -58,7 +58,6 @@ public abstract class BasicHttpHandler extends ChannelInboundHandlerAdapter{
         }else{
             ctx.fireChannelRead(msg);
         }
-
     }
 
     @Override
@@ -69,15 +68,15 @@ public abstract class BasicHttpHandler extends ChannelInboundHandlerAdapter{
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        ctx.writeAndFlush(HttpResponseFactory.getResponse(
-                        "<p>"+cause.getMessage()+"</p>", HttpResponseStatus.INTERNAL_SERVER_ERROR));
+        ctx.writeAndFlush(HttpResponseFactory.getFullResponse(
+                "<p>" + cause.getMessage() + "</p>", HttpResponseStatus.INTERNAL_SERVER_ERROR));
         ctx.close();
         cause.printStackTrace();
     }
 
 
     private void responseTo(ChannelHandlerContext ctx,String content, HttpResponseStatus status){
-        FullHttpResponse response =  HttpResponseFactory.getResponse(content, status);
+        FullHttpResponse response =  HttpResponseFactory.getFullResponse(content, status);
         ctx.writeAndFlush(response);
         ctx.close();
     }

@@ -4,8 +4,8 @@ package org.code4j.codecat.tests.api;/**
  *  上午1:03
  */
 
-import org.code4j.codecat.api.service.BasicHttpHandler;
-import org.code4j.codecat.api.service.Path;
+import org.code4j.codecat.api.container.HttpContainer;
+import org.code4j.codecat.api.container.Path;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -16,7 +16,7 @@ import java.util.Date;
  * 上午1:03
  */
 @Path("/index")
-public class TimerHandler extends BasicHttpHandler {
+public class TimerHandler extends HttpContainer {
     @Override
     public Object service(Object msg) {
         System.out.println("this is a new method!!");

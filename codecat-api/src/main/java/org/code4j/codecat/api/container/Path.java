@@ -1,4 +1,4 @@
-package org.code4j.codecat.api.service;
+package org.code4j.codecat.api.container;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

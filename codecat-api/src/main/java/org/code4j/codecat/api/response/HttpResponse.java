@@ -1,13 +1,12 @@
-package org.code4j.codecat.api.response;/**
- * Description : 
- * Created by YangZH on 16-6-17
- *  上午1:08
- */
+package org.code4j.codecat.api.response;
 
-import org.code4j.codecat.api.http.Method;
-import io.netty.handler.codec.http.DefaultFullHttpResponse;
-import io.netty.handler.codec.http.HttpHeaderNames;
-import io.netty.handler.codec.http.HttpResponseStatus;
+import io.netty.buffer.Unpooled;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.handler.codec.http.*;
+import org.code4j.codecat.commons.util.JSONUtil;
+
+import java.nio.charset.Charset;
+import java.util.Map;
 
 /**
  * Description :
@@ -15,21 +14,72 @@ import io.netty.handler.codec.http.HttpResponseStatus;
  * 上午1:08
  */
 
-public class HttpResponse {
+public class HttpResponse implements Response{
     private DefaultFullHttpResponse response;
+    private ChannelHandlerContext ctx;
     private int statusCode;
 
-    private Method method;
+    private HttpHeaders headers;
 
+    private Object msg;
+
+    private Charset charset;
+
+    private HttpResponseStatus status;
+
+
+    public HttpResponse(ChannelHandlerContext ctx){
+        this.ctx = ctx;
+        String content = null;
+        try {
+            if (msg instanceof String){
+                content = (String) msg;
+            }else if (msg instanceof Map){
+                content = JSONUtil.mapToStr((Map<String, Object>) msg);
+            }else if (msg instanceof Object){
+                content = JSONUtil.objectToStr(msg);
+            }
+            this.response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1,
+                    HttpResponseStatus.OK, Unpooled.wrappedBuffer(content.getBytes(charset)));
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    @Override
     public void addHeader(String key,String value){
-        response.headers().add(key,value);
+        headers.add(key, value);
     }
 
+    @Override
     public void setContentType(String contentType){
-        response.headers().set(HttpHeaderNames.CONTENT_TYPE,contentType);
+        headers.set(HttpHeaderNames.CONTENT_TYPE, contentType);
     }
 
-    public void sendError(HttpResponseStatus status,String msg){
-        response.setStatus(status);
+    @Override
+    public void setCharacterEncoding(String encoding){
+        charset = Charset.forName(encoding);
+    }
+
+    @Override
+    public void setStatusCode(HttpResponseStatus status){
+        this.status = status;
+    }
+
+    @Override
+    public void write(Object msg){
+        ctx.writeAndFlush(msg);
+    }
+
+    @Override
+    public void writeAndClose(Object msg) {
+        ctx.writeAndFlush(msg);
+        close();
+    }
+
+    @Override
+    public void close(){
+        ctx.close();
     }
 }

@@ -33,6 +33,15 @@ public class JSONUtil {
         return params;
     }
 
+    public static String mapToStr(Map<String,Object> map){
+        JSONObject jsonObject = new JSONObject(map);
+        return jsonObject.toString();
+    }
+
+    public static <T> String objectToStr(T obj){
+        return JSON.toJSONString(obj);
+    }
+
     public static boolean isJson(String string){
         try {
             JSON.parseObject(string);

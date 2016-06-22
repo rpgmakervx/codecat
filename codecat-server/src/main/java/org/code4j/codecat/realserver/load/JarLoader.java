@@ -5,7 +5,7 @@ package org.code4j.codecat.realserver.load;/**
  */
 
 
-import org.code4j.codecat.api.service.BasicHttpHandler;
+import org.code4j.codecat.api.container.HttpContainer;
 import org.code4j.codecat.commons.constants.Const;
 import org.code4j.codecat.commons.invoker.ShellInvoker;
 import org.code4j.codecat.commons.util.JedisUtil;
@@ -42,13 +42,13 @@ public class JarLoader {
         this.pluginPath = pluginPath;
     }
 
-    public BasicHttpHandler loadJar(String classname){
+    public HttpContainer loadJar(String classname){
         try {
             // 创建一个URL数组
             URL[] urls = new URL[]{new URL("file:"+this.pluginPath)};
             URLClassLoader classLoader = new URLClassLoader(urls);
-            Class<? extends BasicHttpHandler> clazz =
-                    (Class<? extends BasicHttpHandler>) classLoader.loadClass(classname);
+            Class<? extends HttpContainer> clazz =
+                    (Class<? extends HttpContainer>) classLoader.loadClass(classname);
             return clazz.newInstance();
         } catch (Exception e) {
             e.printStackTrace();
